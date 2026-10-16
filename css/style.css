@@ -10,7 +10,7 @@
   --line: rgba(255, 255, 255, 0.12);
   --text: #ededed;
   --muted: #8c8c8c;
-  --accent: #d9c7a3;          /* color de acento (cámbialo a tu gusto) */
+  --accent: #d9c7a3;       
 
   --display: 'Bebas Neue', Impact, sans-serif;
   --body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
