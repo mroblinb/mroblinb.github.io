@@ -824,39 +824,6 @@ html.lenis, html.lenis body { height: auto; }
   transition: background 0.3s, color 0.3s, border-color 0.3s, transform 0.5s var(--ease);
 }
 
-/* ---------- Cursor personalizado (solo ordenador) ---------- */
-.cursor {
-  position: fixed;
-  top: 0; left: 0;
-  z-index: 95;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.cursor.is-on { opacity: 1; }
-.cursor__ring {
-  position: absolute;
-  left: -20px; top: -20px;
-  width: 40px; height: 40px;
-  border: 1px solid rgba(237, 237, 237, 0.45);
-  border-radius: 50%;
-  transition: transform 0.45s var(--ease), background 0.3s, border-color 0.3s;
-}
-.cursor.is-hover .cursor__ring { transform: scale(1.5); border-color: var(--accent); }
-.cursor.is-view .cursor__ring { transform: scale(2.2); background: var(--accent); border-color: var(--accent); }
-.cursor__label {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #0a0a0a;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.cursor.is-view .cursor__label { opacity: 1; }
-
 /* ---------- Menú móvil: enlaces que entran escalonados ---------- */
 @media (max-width: 960px) {
   .nav__links a {
@@ -898,4 +865,318 @@ html, body { overflow-x: clip; }
 }
 @media (max-width: 520px) {
   .section__head h2 { font-size: clamp(2.2rem, 10vw, 3.4rem); }
+}
+
+
+/* =========================================================
+   V3 · MENÚ FLOTANTE + ANIMACIONES POR SECCIÓN (estilo Persona)
+   ========================================================= */
+
+/* ---------- Barra superior: solo en la portada ---------- */
+.nav.is-away { transform: translateY(-110%); }
+
+/* ---------- Menú flotante (abajo a la derecha) ---------- */
+.fnav {
+  position: fixed;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.9rem;
+  pointer-events: none;
+  visibility: hidden;
+  transition: visibility 0s 0.6s;
+}
+.fnav.is-on { visibility: visible; transition-delay: 0s; }
+
+.fnav__btn {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.65rem 1.2rem 0.65rem 0.75rem;
+  border: 0;
+  font: inherit;
+  background: var(--text);
+  color: #0a0a0a;
+  cursor: pointer;
+  box-shadow: 6px 6px 0 rgba(217, 199, 163, 0.35);
+  opacity: 0;
+  transform: translateY(160%) skewX(-12deg);
+  transition: transform 0.7s var(--ease-out), opacity 0.4s, background 0.3s, box-shadow 0.3s;
+}
+.fnav.is-on .fnav__btn { opacity: 1; transform: skewX(-12deg); }
+.fnav__btn:hover,
+.fnav.is-open .fnav__btn { background: var(--accent); box-shadow: 6px 6px 0 rgba(237, 237, 237, 0.25); }
+.fnav__btn > * { transform: skewX(12deg); }
+
+.fnav__num {
+  padding: 0.15rem 0.45rem;
+  font-family: var(--display);
+  font-size: 1.3rem;
+  line-height: 1;
+  background: #0a0a0a;
+  color: var(--accent);
+}
+.fnav__label {
+  min-width: 8.5rem;
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.fnav__icon {
+  width: 8px; height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  rotate: -135deg;
+  translate: 0 2px;
+  transition: rotate 0.4s var(--ease-out), translate 0.4s;
+}
+.fnav.is-open .fnav__icon { rotate: 45deg; translate: 0 -2px; }
+
+.fnav__menu {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+}
+.fnav__menu a {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.45rem 1.1rem;
+  background: #0a0a0a;
+  border: 1px solid var(--line);
+  color: var(--text);
+  font-family: var(--display);
+  font-size: clamp(1.25rem, 3vw, 1.6rem);
+  line-height: 1.1;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(130%) skewX(-12deg) rotate(var(--r, 0deg));
+  transition: transform 0.45s var(--ease-io), opacity 0.3s, background 0.25s, color 0.25s;
+}
+.fnav__menu a small {
+  font-family: var(--body);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+}
+.fnav.is-open .fnav__menu a {
+  pointer-events: auto;
+  opacity: 1;
+  transform: skewX(-12deg) rotate(var(--r, 0deg));
+  transition: transform 0.6s var(--ease-out), opacity 0.4s, background 0.25s, color 0.25s;
+  transition-delay: calc(var(--i) * 40ms), calc(var(--i) * 40ms), 0s, 0s;
+}
+.fnav.is-open .fnav__menu a:hover {
+  transform: translateX(-14px) skewX(-12deg) rotate(var(--r, 0deg));
+  background: var(--accent);
+  color: #0a0a0a;
+  transition-delay: 0s;
+}
+.fnav__menu a.is-active { background: var(--text); color: #0a0a0a; border-color: var(--text); }
+.fnav__menu a:hover small,
+.fnav__menu a.is-active small { color: #0a0a0a; }
+
+/* ---------- Animaciones comunes ---------- */
+@keyframes slash {
+  0%   { transform: skewX(-18deg) scaleX(0); transform-origin: left; }
+  45%  { transform: skewX(-18deg) scaleX(1); transform-origin: left; }
+  55%  { transform: skewX(-18deg) scaleX(1); transform-origin: right; }
+  100% { transform: skewX(-18deg) scaleX(0); transform-origin: right; }
+}
+@keyframes pop {
+  0%   { opacity: 0; transform: scale(0.3) rotate(-10deg); }
+  70%  { opacity: 1; transform: scale(1.12) rotate(2deg); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes stamp {
+  0%   { opacity: 0; transform: scale(1.6) rotate(-10deg); }
+  55%  { opacity: 1; transform: scale(0.94) rotate(1.5deg); }
+  75%  { transform: scale(1.03) rotate(-0.5deg); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes flash {
+  0%   { opacity: 1; transform: scale(0.96); }
+  100% { opacity: 0; transform: scale(1); }
+}
+@keyframes sweep {
+  from { transform: translateX(-150%) skewX(-20deg); }
+  to   { transform: translateX(350%) skewX(-20deg); }
+}
+
+.section { position: relative; overflow-x: clip; }
+
+/* ---------- Títulos: barra diagonal que barre + número gigante ---------- */
+.section__head { isolation: isolate; }
+.head::before {
+  content: '';
+  position: absolute;
+  left: -1%; top: 0; bottom: 1.4rem;
+  width: 102%;
+  z-index: 2;
+  background: var(--accent);
+  pointer-events: none;
+  transform: skewX(-18deg) scaleX(0);
+  transform-origin: left;
+}
+.head.is-visible::before { animation: slash 1s var(--ease-io) both; }
+
+.head .word {
+  transform: translateY(110%) rotate(6deg);
+  transform-origin: left bottom;
+  transition-delay: calc(0.42s + var(--i) * 0.08s);
+}
+.head .section__num { transition-delay: 0.35s; }
+
+.head__ghost {
+  position: absolute;
+  right: 0; top: 50%;
+  z-index: -1;
+  font-family: var(--display);
+  font-size: clamp(7rem, 22vw, 17rem);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(217, 199, 163, 0.25);
+  pointer-events: none;
+  translate: 0 calc(-50% + var(--py, 0px));
+  opacity: 0;
+  transform: translateX(160px) rotate(6deg) skewX(-25deg);
+  transition: transform 1.4s var(--ease-out) 0.3s, opacity 1s 0.3s;
+}
+.head.is-visible .head__ghost { opacity: 1; transform: rotate(-8deg); }
+
+/* ---------- 01 Sobre mí: foto con corte diagonal y marco de rayas ---------- */
+.js #sobre-mi .about { position: relative; isolation: isolate; align-items: start; }
+.js #sobre-mi .about::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0;
+  width: min(380px, 100%);
+  aspect-ratio: 4 / 5;
+  translate: 20px 20px;
+  z-index: -1;
+  background: repeating-linear-gradient(-45deg, rgba(217, 199, 163, 0.5) 0 2px, transparent 2px 11px);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 1.2s var(--ease-io) 0.7s;
+}
+.js #sobre-mi .about.is-visible::before { clip-path: inset(0 0 0 0); }
+
+.js #sobre-mi .about__photo.reveal {
+  clip-path: polygon(0 0, 0 0, -25% 100%, -25% 100%);
+  transition: opacity 0.6s var(--ease) var(--d, 0s), clip-path 1.5s var(--ease-io) var(--d, 0s);
+}
+.js #sobre-mi .about__photo.reveal:not(.is-visible) { transform: none; }
+.js #sobre-mi .about__photo.reveal.is-visible { clip-path: polygon(0 0, 125% 0, 100% 100%, -25% 100%); }
+
+.js #sobre-mi .about__text .reveal:not(.is-visible) { transform: translateX(80px) skewX(-12deg); }
+
+/* ---------- 02 Skills: tarjetas que entran girando desde los lados ---------- */
+.js #skills .card.reveal:not(.settled) {
+  transition: opacity 0.7s var(--ease) var(--d, 0s), transform 1.1s cubic-bezier(0.34, 1.4, 0.64, 1) var(--d, 0s), border-color 0.4s;
+}
+.js #skills .card.reveal:nth-child(odd):not(.is-visible)  { transform: translate(-90px, 60px) rotate(-7deg); }
+.js #skills .card.reveal:nth-child(even):not(.is-visible) { transform: translate(90px, 60px) rotate(7deg); }
+.js #skills .reveal.is-visible .tags li {
+  animation-name: pop;
+  animation-duration: 0.6s;
+  animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ---------- 03 Experiencia: bloques que entran inclinados y un destello ---------- */
+.js #experiencia .row { overflow: hidden; }
+.js #experiencia .row::before { top: 0; }
+.js #experiencia .row.reveal:not(.is-visible) { transform: none; }
+.js #experiencia .row .row__meta,
+.js #experiencia .row .row__body {
+  transition: transform 1s var(--ease-out) calc(var(--d, 0s) + 0.1s), opacity 0.8s calc(var(--d, 0s) + 0.1s);
+}
+.js #experiencia .row .row__body { transition-delay: calc(var(--d, 0s) + 0.22s); }
+.js #experiencia .row:not(.is-visible) .row__meta { opacity: 0; transform: translateX(-70px); }
+.js #experiencia .row:not(.is-visible) .row__body { opacity: 0; transform: translateX(110px) skewX(-14deg); }
+.js #experiencia .row::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 35%;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(217, 199, 163, 0.16), transparent);
+  transform: translateX(-150%) skewX(-20deg);
+}
+.js #experiencia .row.is-visible::after { animation: sweep 1.3s var(--ease-io) calc(var(--d, 0s) + 0.3s) both; }
+
+/* ---------- 04 Formación: filas que caen girando en 3D ---------- */
+.js #formacion .rows { perspective: 1400px; }
+.js #formacion .row.reveal {
+  transform-origin: 50% 0;
+  transition: opacity 0.8s var(--d, 0s), transform 1.2s var(--ease-out) var(--d, 0s);
+}
+.js #formacion .row.reveal:not(.is-visible) { transform: rotateX(-75deg) translateY(20px); }
+
+/* ---------- 05 Cursos: tarjetas que caen como un sello ---------- */
+.js #cursos .card.reveal:not(.is-visible) { transform: none; }
+.js #cursos .card.reveal.is-visible { animation: stamp 0.9s cubic-bezier(0.2, 0.9, 0.3, 1.2) var(--d, 0s) backwards; }
+.js #cursos .card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--accent);
+  pointer-events: none;
+  opacity: 0;
+}
+.js #cursos .card.is-visible::after { animation: flash 0.7s ease-out calc(var(--d, 0s) + 0.45s) both; }
+
+/* ---------- 06 Portfolio: proyectos que suben girando y corte diagonal ---------- */
+.js #portfolio .project { --rot: -4deg; }
+.js #portfolio .project:nth-child(even) { --rot: 4deg; }
+.js #portfolio .project.reveal {
+  transition: opacity 0.8s var(--ease) var(--d, 0s), transform 1.3s var(--ease-out) var(--d, 0s);
+}
+.js #portfolio .project.reveal:not(.is-visible) { transform: translateY(100px) rotate(var(--rot)); }
+.js #portfolio .project .project__img {
+  clip-path: polygon(125% 0, 125% 0, 100% 100%, 100% 100%);
+  transition: filter 0.8s var(--ease) 0s, clip-path 1.4s var(--ease-io) calc(var(--d, 0s) + 0.15s);
+}
+.js #portfolio .project.is-visible .project__img { clip-path: polygon(0 0, 125% 0, 100% 100%, -25% 100%); }
+.js #portfolio .project .project__info {
+  transition: opacity 0.8s calc(var(--d, 0s) + 0.55s), transform 1s var(--ease-out) calc(var(--d, 0s) + 0.55s);
+}
+.js #portfolio .project:not(.is-visible) .project__info { opacity: 0; transform: translateX(-50px) skewX(-10deg); }
+
+/* ---------- 07 Idiomas: bloques inclinados y nivel que salta ---------- */
+.js #idiomas .lang.reveal:not(.is-visible) { transform: translateY(70px) skewY(5deg); }
+.js #idiomas .lang__top h3 { transition: transform 1s var(--ease-out) calc(var(--d, 0s) + 0.2s); }
+.js #idiomas .lang:not(.is-visible) .lang__top h3 { transform: translateX(-60px) skewX(-15deg); }
+.lang__top span { display: inline-block; }
+.js #idiomas .lang:not(.is-visible) .lang__top span { opacity: 0; }
+.js #idiomas .lang.is-visible .lang__top span { animation: pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--d, 0s) + 1.2s) both; }
+
+/* ---------- 08 Contacto: datos que entran por un lado y enlaces por el otro ---------- */
+.js #contacto .contact__list li {
+  transition: opacity 0.6s calc(0.4s + var(--i, 0) * 0.1s), transform 0.9s var(--ease-out) calc(0.4s + var(--i, 0) * 0.1s);
+}
+.js #contacto .contact__data:not(.is-visible) .contact__list li { opacity: 0; transform: translateX(-50px); }
+.js #contacto .social {
+  transition: padding 0.4s var(--ease), color 0.3s,
+    opacity 0.6s calc(var(--d, 0s) + 0.2s + var(--i, 0) * 0.1s),
+    transform 1s var(--ease-out) calc(var(--d, 0s) + 0.2s + var(--i, 0) * 0.1s);
+}
+.js #contacto .contact__links:not(.is-visible) .social { opacity: 0; transform: translateX(100px) skewX(-18deg); }
+
+/* ---------- Ajustes móvil ---------- */
+@media (max-width: 960px) {
+  .js #sobre-mi .about::before { width: min(340px, 100%); }
+}
+
+/* ---------- Accesibilidad: sin animaciones si el sistema lo pide ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0s !important; }
+  .js #sobre-mi .about::before { clip-path: none; }
 }

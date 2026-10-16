@@ -2,7 +2,7 @@
    PORTFOLIO · Marco Roblin Bianchi
    Animaciones e interacción. No hace falta tocar el HTML:
    todo lo que se añade (pantalla de carga, banda de skills,
-   cursor, barra de progreso) lo crea este archivo.
+   menú flotante, barra de progreso) lo crea este archivo.
    ========================================================= */
 (() => {
   'use strict';
@@ -41,27 +41,43 @@
     });
   }
 
+  // Títulos de sección: palabras sueltas + número gigante de fondo
   const heads = [...document.querySelectorAll('.section__head')];
   if (!reducedMotion) {
     heads.forEach((head) => {
       head.classList.remove('reveal');
       head.classList.add('head');
       const h2 = head.querySelector('h2');
-      if (!h2) return;
-      const text = h2.textContent.trim();
-      h2.setAttribute('aria-label', text);
-      h2.innerHTML = text
-        .split(/\s+/)
-        .map((w, i) => `<span class="word-mask" aria-hidden="true"><span class="word" style="--i:${i}">${escapeHTML(w)}</span></span>`)
-        .join(' ');
+      if (h2) {
+        const text = h2.textContent.trim();
+        h2.setAttribute('aria-label', text);
+        h2.innerHTML = text
+          .split(/\s+/)
+          .map((w, i) => `<span class="word-mask" aria-hidden="true"><span class="word" style="--i:${i}">${escapeHTML(w)}</span></span>`)
+          .join(' ');
+      }
+      const num = head.querySelector('.section__num');
+      if (num) {
+        const ghost = document.createElement('span');
+        ghost.className = 'head__ghost';
+        ghost.setAttribute('aria-hidden', 'true');
+        ghost.dataset.speed = '120';
+        ghost.textContent = num.textContent.trim();
+        head.append(ghost);
+      }
     });
   }
 
-  // Índice de cada etiqueta y punto de lista para que aparezcan uno detrás de otro
-  document.querySelectorAll('.tags, .list').forEach((list) => {
-    [...list.children].forEach((li, i) => li.style.setProperty('--i', i));
+  // Índices para que los elementos aparezcan uno detrás de otro
+  const setIndex = (els) => els.forEach((el, i) => el.style.setProperty('--i', i));
+  document.querySelectorAll('.tags, .list, .contact__list').forEach((list) => setIndex([...list.children]));
+  setIndex([...document.querySelectorAll('.contact__links .social')]);
+  setIndex(navLinks);
+  document.querySelectorAll('.rows').forEach((rows) => {
+    [...rows.children].forEach((row, i) => {
+      if (!row.style.getPropertyValue('--d')) row.style.setProperty('--d', `${i * 0.12}s`);
+    });
   });
-  navLinks.forEach((a, i) => a.style.setProperty('--i', i));
 
   /* ---------- 2. Banda de skills en movimiento (se crea a partir de tus skills) ---------- */
   let marqueeTrack = null;
@@ -87,15 +103,89 @@
   progress.setAttribute('aria-hidden', 'true');
   body.prepend(progress);
 
-  /* ---------- 4. Aparición de elementos al hacer scroll ---------- */
+  /* ---------- 4. Menú flotante (abajo a la derecha) ---------- */
+  const sectionInfo = { inicio: { num: '00', label: 'Inicio' } };
+  navLinks.forEach((link) => {
+    const id = link.getAttribute('href').slice(1);
+    const num = document.querySelector(`#${CSS.escape(id)} .section__num`);
+    sectionInfo[id] = { num: num ? num.textContent.trim() : '', label: link.textContent.trim() };
+  });
+
+  const fnav = document.createElement('div');
+  fnav.className = 'fnav';
+  fnav.innerHTML = `
+    <nav class="fnav__menu" id="fnavMenu" aria-label="Secciones">
+      ${Object.entries(sectionInfo).map(([id, info], i) => `
+        <a href="#${id}" style="--i:${Object.keys(sectionInfo).length - 1 - i}; --r:${i % 2 ? '1deg' : '-1.5deg'}">
+          <small>${escapeHTML(info.num)}</small>${escapeHTML(info.label)}
+        </a>`).join('')}
+    </nav>
+    <button class="fnav__btn" type="button" aria-expanded="false" aria-controls="fnavMenu" aria-label="Abrir menú de secciones">
+      <span class="fnav__num">00</span>
+      <span class="fnav__label">Inicio</span>
+      <span class="fnav__icon" aria-hidden="true"></span>
+    </button>`;
+  body.append(fnav);
+
+  const fnavBtn = fnav.querySelector('.fnav__btn');
+  const fnavNum = fnav.querySelector('.fnav__num');
+  const fnavLabel = fnav.querySelector('.fnav__label');
+  const fnavLinks = [...fnav.querySelectorAll('.fnav__menu a')];
+  const allLinks = [...navLinks, ...fnavLinks];
+
+  function setFnav(open) {
+    fnav.classList.toggle('is-open', open);
+    fnavBtn.setAttribute('aria-expanded', String(open));
+    fnavBtn.setAttribute('aria-label', open ? 'Cerrar menú de secciones' : 'Abrir menú de secciones');
+  }
+
+  fnavBtn.addEventListener('click', () => setFnav(!fnav.classList.contains('is-open')));
+  document.addEventListener('click', (e) => {
+    if (fnav.classList.contains('is-open') && !fnav.contains(e.target)) setFnav(false);
+  });
+
+  const setCurrent = (id) => {
+    allLinks.forEach((link) => link.classList.toggle('is-active', link.getAttribute('href') === `#${id}`));
+    const info = sectionInfo[id];
+    if (info) {
+      fnavNum.textContent = info.num;
+      fnavLabel.textContent = info.label;
+    }
+  };
+
+  /* ---------- 5. Efecto de letras que se descifran (correo de contacto) ---------- */
+  const mail = document.querySelector('.contact__mail');
+  const mailText = mail ? mail.textContent.trim() : '';
+  if (mail) mail.setAttribute('aria-label', mailText);
+
+  const scramble = (el, text, duration = 1400) => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&@';
+    const start = performance.now() + 350;
+    const frame = (now) => {
+      const t = Math.max(0, Math.min((now - start) / duration, 1));
+      const done = Math.floor(t * text.length);
+      let out = text.slice(0, done);
+      for (let i = done; i < text.length; i++) out += chars[(Math.random() * chars.length) | 0];
+      el.textContent = out;
+      if (t < 1) requestAnimationFrame(frame);
+      else el.textContent = text;
+    };
+    requestAnimationFrame(frame);
+  };
+
+  /* ---------- 6. Aparición de elementos al hacer scroll ---------- */
   const heroReveals = hero ? [...hero.querySelectorAll('.reveal')] : [];
-  const revealEls = [...document.querySelectorAll('.reveal, .head')].filter((el) => !heroReveals.includes(el));
+  const revealEls = [...document.querySelectorAll('.reveal, .head, #sobre-mi .about, .contact__mail')]
+    // La foto empieza recortada a 0 px y el navegador no la detecta: se activa junto con su bloque (.about)
+    .filter((el) => !heroReveals.includes(el) && !el.matches('.about__photo'));
 
   const show = (el) => {
     el.classList.add('is-visible');
+    if (el === mail && !reducedMotion) scramble(mail, mailText);
+    if (el.matches('.about')) el.querySelectorAll('.about__photo').forEach(show);
     const delay = parseFloat(getComputedStyle(el).getPropertyValue('--d')) || 0;
     // "settled": la entrada ya terminó y la tarjeta puede reaccionar al ratón
-    setTimeout(() => el.classList.add('settled'), 1100 + delay * 1000);
+    setTimeout(() => el.classList.add('settled'), 1300 + delay * 1000);
   };
 
   if ('IntersectionObserver' in window && !reducedMotion) {
@@ -113,7 +203,7 @@
     revealEls.forEach(show);
   }
 
-  /* ---------- 5. Pantalla de carga e intro del hero ---------- */
+  /* ---------- 7. Pantalla de carga e intro del hero ---------- */
   const startHero = () => {
     root.classList.remove('pre-intro');
     body.classList.add('intro');
@@ -158,7 +248,7 @@
     requestAnimationFrame(step);
   }
 
-  /* ---------- 6. Scroll suave con Lenis (si no carga, se usa el scroll normal) ---------- */
+  /* ---------- 8. Scroll suave con Lenis (si no carga, se usa el scroll normal) ---------- */
   let lenis = null;
 
   if (!reducedMotion) {
@@ -185,30 +275,27 @@
 
     e.preventDefault();
     setMenu(false);
+    setFnav(false);
     if (lenis) {
-      lenis.scrollTo(target, { offset: href === '#inicio' ? 0 : -70, duration: 1.4 });
+      lenis.scrollTo(target, { offset: href === '#inicio' ? 0 : -40, duration: 1.4 });
     } else {
       target.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' });
     }
     history.replaceState(null, '', href);
   });
 
-  /* ---------- 7. Enlace activo según la sección visible ---------- */
+  /* ---------- 9. Sección activa (menú de arriba y menú flotante) ---------- */
   if ('IntersectionObserver' in window) {
     const sectionObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        const id = entry.target.id;
-        navLinks.forEach((link) => {
-          link.classList.toggle('is-active', link.getAttribute('href') === `#${id}`);
-        });
+        if (entry.isIntersecting) setCurrent(entry.target.id);
       });
     }, { rootMargin: '-40% 0px -55% 0px' });
 
     sections.forEach((section) => sectionObserver.observe(section));
   }
 
-  /* ---------- 8. Menú móvil ---------- */
+  /* ---------- 10. Menú móvil ---------- */
   function setMenu(open) {
     body.classList.toggle('menu-open', open);
     toggle.setAttribute('aria-expanded', String(open));
@@ -220,53 +307,17 @@
   toggle.addEventListener('click', () => setMenu(!body.classList.contains('menu-open')));
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') setMenu(false);
+    if (e.key !== 'Escape') return;
+    setMenu(false);
+    setFnav(false);
   });
 
   window.addEventListener('resize', () => {
     if (isDesktop()) setMenu(false);
   });
 
-  /* ---------- 9. La barra se oculta al hacer scroll y reaparece al parar (escritorio) ---------- */
-  let scrollTimer;
-
-  window.addEventListener('scroll', () => {
-    if (!isDesktop() || body.classList.contains('menu-open')) return;
-    if (window.scrollY > 120) nav.classList.add('is-hidden');
-    clearTimeout(scrollTimer);
-    scrollTimer = setTimeout(() => nav.classList.remove('is-hidden'), 220);
-  }, { passive: true });
-
-  /* ---------- 10. Efectos con el ratón (solo ordenador) ---------- */
-  const cursor = { el: null, x: 0, y: 0, tx: 0, ty: 0 };
-
+  /* ---------- 11. Efectos con el ratón (solo ordenador) ---------- */
   if (finePointer && !reducedMotion) {
-    // Cursor que sigue al ratón
-    cursor.el = document.createElement('div');
-    cursor.el.className = 'cursor';
-    cursor.el.setAttribute('aria-hidden', 'true');
-    cursor.el.innerHTML = '<span class="cursor__ring"></span><span class="cursor__label">Ver</span>';
-    body.append(cursor.el);
-
-    window.addEventListener('mousemove', (e) => {
-      cursor.tx = e.clientX;
-      cursor.ty = e.clientY;
-      if (!cursor.el.classList.contains('is-on')) {
-        cursor.x = cursor.tx;
-        cursor.y = cursor.ty;
-        cursor.el.classList.add('is-on');
-      }
-    }, { passive: true });
-
-    document.addEventListener('mouseleave', () => cursor.el.classList.remove('is-on'));
-
-    document.addEventListener('mouseover', (e) => {
-      const onProject = !!e.target.closest('.project');
-      const onLink = !!e.target.closest('a, button, .card, .tags li');
-      cursor.el.classList.toggle('is-view', onProject);
-      cursor.el.classList.toggle('is-hover', onLink && !onProject);
-    });
-
     // Brillo del hero que sigue al ratón
     if (hero) {
       hero.addEventListener('mousemove', (e) => {
@@ -308,12 +359,13 @@
     });
   }
 
-  /* ---------- 11. Bucle de animación: scroll suave, parallax, banda y cursor ---------- */
-  const parallaxEls = [...document.querySelectorAll('.about__photo, .project__img')];
+  /* ---------- 12. Bucle de animación: scroll suave, parallax, banda y menús ---------- */
+  const parallaxEls = [...document.querySelectorAll('.about__photo, .project__img, .head__ghost')];
   let lastY = window.scrollY;
   let velocity = 0;
   let marqueeX = 0;
   let direction = 1;
+  let away = null;
 
   const tick = (time) => {
     if (lenis) lenis.raf(time);
@@ -327,6 +379,15 @@
     const max = root.scrollHeight - vh;
     progress.style.transform = `scaleX(${max > 0 ? Math.min(y / max, 1) : 0})`;
 
+    // Fuera de la portada: se oculta la barra de arriba y aparece el menú flotante
+    const isAway = y > (hero ? hero.offsetHeight * 0.7 : 300);
+    if (isAway !== away) {
+      away = isAway;
+      nav.classList.toggle('is-away', isAway && !body.classList.contains('menu-open'));
+      fnav.classList.toggle('is-on', isAway);
+      if (!isAway) setFnav(false);
+    }
+
     if (!reducedMotion) {
       // El hero se desplaza más despacio y se desvanece
       if (heroInner && y < vh * 1.3) {
@@ -334,12 +395,13 @@
         heroInner.style.opacity = Math.max(0, 1 - y / (vh * 0.85)).toFixed(3);
       }
 
-      // Parallax de la foto y las imágenes de proyectos
+      // Parallax de la foto, las imágenes de proyectos y los números gigantes
       parallaxEls.forEach((el) => {
         const r = el.getBoundingClientRect();
-        if (r.bottom < 0 || r.top > vh) return;
+        if (r.bottom < -200 || r.top > vh + 200) return;
+        const speed = parseFloat(el.dataset.speed) || 40;
         const p = (r.top + r.height / 2 - vh / 2) / vh;
-        el.style.setProperty('--py', `${(p * -40).toFixed(1)}px`);
+        el.style.setProperty('--py', `${(p * -speed).toFixed(1)}px`);
       });
 
       // Banda de skills: se acelera y cambia de sentido con el scroll
@@ -356,18 +418,11 @@
       }
     }
 
-    // Cursor con retardo suave
-    if (cursor.el) {
-      cursor.x += (cursor.tx - cursor.x) * 0.18;
-      cursor.y += (cursor.ty - cursor.y) * 0.18;
-      cursor.el.style.transform = `translate3d(${cursor.x}px, ${cursor.y}px, 0)`;
-    }
-
     requestAnimationFrame(tick);
   };
   requestAnimationFrame(tick);
 
-  /* ---------- 12. Año automático en el pie de página ---------- */
+  /* ---------- 13. Año automático en el pie de página ---------- */
   const year = document.getElementById('year');
   if (year) year.textContent = new Date().getFullYear();
 })();
