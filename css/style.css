@@ -1180,3 +1180,33 @@ html, body { overflow-x: clip; }
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0s !important; }
   .js #sobre-mi .about::before { clip-path: none; }
 }
+
+
+/* ---------- Botón "Descargar CV" (Sobre mí) ---------- */
+.about__cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.4rem;
+  margin-top: 2.2rem;
+}
+.btn--cv {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.btn__icon {
+  width: 15px; height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: square;
+  transition: transform 0.4s var(--ease-out);
+}
+.btn--cv:hover .btn__icon { transform: translateY(3px); }
+.about__cta-note {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
