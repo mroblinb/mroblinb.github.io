@@ -459,15 +459,32 @@
           </article>
 
           <article class="project reveal" style="--d:.25s">
-            <div class="project__img project__img--3"><span>03</span></div>
+            <div class="project__img project__img--photo">
+              <img src="img/proyecto-hoteles.jpg" alt="Página de inicio del buscador de hoteles HotelBooking" loading="lazy">
+              <span>03</span>
+            </div>
             <div class="project__info">
-              <h3>Proyecto 03</h3>
-              <p>Describir aquí qué problema resuelto del proyecto y qué he hecho.</p>
-              <ul class="tags tags--small">
-                <li>Tecnología</li>
-                <li>Tecnología</li>
+              <p class="card__label">Bases de Datos</p>
+              <h3>HotelBooking</h3>
+              <p>Buscador y sistema de reservas de hoteles: aplicación web para buscar hoteles por ciudad y fechas, consultar su disponibilidad y reservar, conectada a MySQL a través de una API en Flask y desplegada con Docker Compose en 4 contenedores.</p>
+              <ul class="list">
+                <li>Procedimiento almacenado que comprueba la disponibilidad y crea la reserva</li>
+                <li>Trigger que registra cada reserva en una tabla de auditoría</li>
+                <li>API REST con validaciones y protección frente a inyección SQL</li>
+                <li>Nginx como proxy inverso y phpMyAdmin para la base de datos</li>
+                <li>Desarrollado con ayuda de IA (OpenCode)</li>
               </ul>
-              <a class="link" href="https://github.com/mroblinb">Ver en GitHub →</a>
+              <ul class="tags tags--small">
+                <li>Docker</li>
+                <li>MySQL</li>
+                <li>Python</li>
+                <li>Flask</li>
+                <li>Nginx</li>
+                <li>SQL</li>
+                <li>JavaScript</li>
+                <li>IA</li>
+              </ul>
+              <a class="link" href="https://github.com/mroblinb/buscador-hoteles" target="_blank" rel="noopener">Ver en GitHub →</a>
             </div>
           </article>
 
