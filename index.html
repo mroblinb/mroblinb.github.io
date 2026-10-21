@@ -29,8 +29,8 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
-    <!-- Número de versión (?v=4): súbelo (v=5, v=6...) cada vez que cambies el CSS o el JS para que los navegadores no usen la versión antigua -->
-    <link rel="stylesheet" href="css/style.css?v=4">
+    <!-- Número de versión (?v=5): súbelo (v=6, v=7...) cada vez que cambies el CSS o el JS para que los navegadores no usen la versión antigua -->
+    <link rel="stylesheet" href="css/style.css?v=5">
 
   <!-- Activa las animaciones solo si JavaScript funciona -->
   <script>document.documentElement.classList.add('js');</script>
@@ -429,16 +429,32 @@
           </article>
 
           <article class="project reveal" style="--d:.15s">
-            <div class="project__img project__img--2"><span>02</span></div>
+            <div class="project__img project__img--photo">
+              <img src="img/proyecto-twojeys.jpg" alt="Página de inicio de la web no oficial de TwoJeys" loading="lazy">
+              <span>02</span>
+            </div>
             <div class="project__info">
-              <h3>Proyecto 02</h3>
-              <p>Describir aquí qué problema resuelto del proyecto y qué he hecho.</p>
-              <ul class="tags tags--small">
-                <li>Tecnología</li>
-                <li>Tecnología</li>
+              <p class="card__label">Lenguajes de Marcas</p>
+              <h3>TwoJeys · Web no oficial</h3>
+              <p>Recreación de la tienda online de la marca TwoJeys, hecha a mano con HTML, CSS y JavaScript como trabajo final del módulo: 44 páginas con catálogo, colecciones, fichas de producto y carrito.</p>
+              <ul class="list">
+                <li>Mega menú desplegable hecho solo con CSS</li>
+                <li>Carrito con cantidad y precio dinámicos</li>
+                <li>Formulario de contacto con validación en JavaScript</li>
+                <li>Intro de vídeo, aviso de cookies y zoom de producto</li>
               </ul>
-              <!-- EDITAR: sustituir # por el enlace al repositorio o a más información -->
-              <a class="link" href="https://github.com/mroblinb">Ver en GitHub →</a>
+              <ul class="tags tags--small">
+                <li>HTML</li>
+                <li>CSS</li>
+                <li>JavaScript</li>
+                <li>Diseño web</li>
+                <li>E-commerce</li>
+                <li>GitHub Pages</li>
+              </ul>
+              <div class="project__links">
+                <a class="link" href="https://mroblinb.github.io/twojeys-web/" target="_blank" rel="noopener">Ver web →</a>
+                <a class="link" href="https://github.com/mroblinb/twojeys-web" target="_blank" rel="noopener">Ver en GitHub →</a>
+              </div>
             </div>
           </article>
 
@@ -523,6 +539,6 @@
     <a href="#inicio">Volver arriba ↑</a>
   </footer>
 
-  <script src="js/main.js?v=4"></script>
+  <script src="js/main.js?v=5"></script>
 </body>
 </html>

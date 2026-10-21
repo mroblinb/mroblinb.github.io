@@ -1339,3 +1339,6 @@ html, body { overflow-x: clip; }
 .project:hover .project__img--photo { filter: none; }
 .project__img--photo img { filter: grayscale(1); transition: scale 1s var(--ease-out), filter 0.8s var(--ease); }
 .project:hover .project__img--photo img { filter: grayscale(0); }
+
+/* ---------- Proyectos con varios enlaces (web y código) ---------- */
+.project__links { display: flex; flex-wrap: wrap; gap: 0.8rem 1.6rem; }
