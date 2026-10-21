@@ -29,8 +29,8 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
-    <!-- Número de versión (?v=3): súbelo (v=4, v=5...) cada vez que cambies el CSS o el JS para que los navegadores no usen la versión antigua -->
-    <link rel="stylesheet" href="css/style.css?v=3">
+    <!-- Número de versión (?v=4): súbelo (v=5, v=6...) cada vez que cambies el CSS o el JS para que los navegadores no usen la versión antigua -->
+    <link rel="stylesheet" href="css/style.css?v=4">
 
   <!-- Activa las animaciones solo si JavaScript funciona -->
   <script>document.documentElement.classList.add('js');</script>
@@ -399,20 +399,32 @@
         <div class="projects">
 
           <article class="project reveal" style="--d:.05s">
-            <div class="project__img project__img--1"><span>01</span></div>
+            <div class="project__img project__img--photo">
+              <img src="img/proyecto-asti.jpg" alt="Robot del equipo en el ASTI Robotic Challenge 2026" loading="lazy">
+              <span>01</span>
+            </div>
             <div class="project__info">
-              <h3>ASTI Robotic Challenge</h3>
-              <p>Finalista de la edición 2026 del reto de robótica de la Fundación ASTI Talent&amp;Tech.</p>
-              <ul class="tags tags--small">
-                <li>Robótica</li>
-                <li>Equipo</li>
-                <li>WiFi</li>
-                <li>Pruebas</li>
-                <li>Código</li>
-                <li>Competición</li>
+              <p class="card__label">Finalista 2026</p>
+              <h3>ASTI Robotic Challenge 2026</h3>
+              <p>Finalistas en la competición de robótica por equipos de la Fundación ASTI Talent&amp;Tech, con un robot diseñado, programado y probado por nosotros.</p>
+              <ul class="list">
+                <li>Diseño y organización del trabajo del equipo</li>
+                <li>Presentación del proyecto y pseudocódigo de la programación</li>
+                <li>Investigación de materiales y elaboración del presupuesto</li>
+                <li>Modelo de financiación del proyecto</li>
               </ul>
-              <!-- EDITAR: sustituir # por el enlace al repositorio o a más información -->
-              <a class="link" href="#">Ver más →</a>
+              <ul class="tags tags--small">
+                <li>WiFi</li>
+                <li>Programación</li>
+                <li>Electrónica</li>
+                <li>Robot</li>
+                <li>Competición</li>
+                <li>Pruebas</li>
+                <li>Finalista</li>
+                <li>Proyecto</li>
+              </ul>
+              <!-- EDITAR: cuando el repositorio esté en GitHub, quita los comentarios y pon su enlace -->
+              <!-- <a class="link" href="https://github.com/mroblinb/NOMBRE-DEL-REPO" target="_blank" rel="noopener">Ver en GitHub →</a> -->
             </div>
           </article>
 
@@ -507,6 +519,6 @@
     <a href="#inicio">Volver arriba ↑</a>
   </footer>
 
-  <script src="js/main.js?v=3"></script>
+  <script src="js/main.js?v=4"></script>
 </body>
 </html>

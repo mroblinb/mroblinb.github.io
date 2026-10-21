@@ -1302,3 +1302,40 @@ html, body { overflow-x: clip; }
 }
 .fnav__menu a.is-active small,
 .fnav__menu a:hover small { color: var(--on-accent); }
+
+
+/* ---------- Proyectos con foto de portada ---------- */
+.project__img--photo { background: var(--bg-soft); }
+.project__img--photo img {
+  position: absolute;
+  inset: -8% 0;               /* margen extra para el efecto parallax */
+  width: 100%;
+  height: 116%;
+  object-fit: cover;
+  translate: 0 var(--py, 0px);
+  transition: scale 1s var(--ease-out);
+}
+.project:hover .project__img--photo img { scale: 1.06; }
+
+/* El número pasa a ser una etiqueta roja en la esquina */
+.project__img--photo span {
+  position: absolute;
+  top: 0.9rem; left: 0.9rem;
+  padding: 0.15rem 0.7rem;
+  font-size: 1.6rem;
+  line-height: 1.1;
+  color: var(--on-accent);
+  background: var(--accent);
+  clip-path: polygon(8% 0, 100% 0, 92% 100%, 0 100%);
+  translate: none;
+}
+.project:hover .project__img--photo span { transform: none; }
+
+.project__info .card__label { margin: 0 0 0.6rem; font-size: 0.7rem; color: var(--on-accent); white-space: nowrap; }
+.project__info .list { margin: 0.2rem 0 1.1rem; }
+.project__info .list li { font-size: 0.88rem; }
+/* El blanco y negro se aplica solo a la foto, para que la etiqueta roja no pierda su color */
+.project__img--photo,
+.project:hover .project__img--photo { filter: none; }
+.project__img--photo img { filter: grayscale(1); transition: scale 1s var(--ease-out), filter 0.8s var(--ease); }
+.project:hover .project__img--photo img { filter: grayscale(0); }
