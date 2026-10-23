@@ -29,8 +29,8 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
-    <!-- Número de versión (?v=5): súbelo (v=6, v=7...) cada vez que cambies el CSS o el JS para que los navegadores no usen la versión antigua -->
-    <link rel="stylesheet" href="css/style.css?v=5">
+    <!-- Número de versión (?v=6): súbelo (v=7, v=8...) cada vez que cambies el CSS o el JS para que los navegadores no usen la versión antigua -->
+    <link rel="stylesheet" href="css/style.css?v=6">
 
   <!-- Activa las animaciones solo si JavaScript funciona -->
   <script>document.documentElement.classList.add('js');</script>
@@ -488,6 +488,39 @@
             </div>
           </article>
 
+          <article class="project reveal" style="--d:.35s">
+            <div class="project__img project__img--photo">
+              <img src="img/proyecto-infopc.jpg" alt="Panel de Phantom Monitor en modo demo" loading="lazy">
+              <span>04</span>
+            </div>
+            <div class="project__info">
+              <p class="card__label">Monitor del sistema</p>
+              <h3>Phantom Monitor · InfoPC</h3>
+              <p>Monitor de rendimiento del PC en tiempo real con estilo Persona 5: CPU por núcleo, RAM, GPU, red, discos, procesos y batería. La web está publicada en GitHub Pages y lee los datos de un agente en Python que se ejecuta en el propio equipo.</p>
+              <ul class="list">
+                <li>Agente local en Python con psutil que sirve las métricas en JSON</li>
+                <li>Tres modos: agente, navegador (sin instalar nada) y demo</li>
+                <li>Privacidad: solo escucha en 127.0.0.1 y solo responde a la web oficial (CORS)</li>
+                <li>Uso de GPU en Windows con contadores de rendimiento de PowerShell</li>
+                <li>Desarrollado con ayuda de IA (Claude Code)</li>
+              </ul>
+              <ul class="tags tags--small">
+                <li>Python</li>
+                <li>psutil</li>
+                <li>JavaScript</li>
+                <li>HTML</li>
+                <li>CSS</li>
+                <li>PowerShell</li>
+                <li>GitHub Pages</li>
+                <li>IA</li>
+              </ul>
+              <div class="project__links">
+                <a class="link" href="https://mroblinb.github.io/InfoPC/" target="_blank" rel="noopener">Ver web →</a>
+                <a class="link" href="https://github.com/mroblinb/InfoPC" target="_blank" rel="noopener">Ver en GitHub →</a>
+              </div>
+            </div>
+          </article>
+
         </div>
       </div>
     </section>
@@ -556,6 +589,6 @@
     <a href="#inicio">Volver arriba ↑</a>
   </footer>
 
-  <script src="js/main.js?v=5"></script>
+  <script src="js/main.js?v=6"></script>
 </body>
 </html>

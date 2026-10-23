@@ -1342,3 +1342,11 @@ html, body { overflow-x: clip; }
 
 /* ---------- Proyectos con varios enlaces (web y código) ---------- */
 .project__links { display: flex; flex-wrap: wrap; gap: 0.8rem 1.6rem; }
+
+/* ---------- Proyectos en cuadrícula 2 × 2 (cuatro proyectos) ---------- */
+@media (min-width: 761px) {
+  .projects { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3rem 2.5rem; }
+}
+@media (max-width: 760px) {
+  .projects { grid-template-columns: 1fr; }
+}
